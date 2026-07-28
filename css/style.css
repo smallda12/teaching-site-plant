@@ -622,3 +622,56 @@ body.作答中 .口播稿 { text-align: center; }
 @media (hover: none) {
   .重點卡:hover, .圖卡:hover, .色塊:hover { transform: none; }
 }
+
+/* ================================================================
+   分區七：延伸學習（外部影片卡片，點了外連 YouTube）
+   ================================================================ */
+.延伸提醒 {
+  background: #fff8e1; border: 2px solid #ffcc80; border-radius: var(--圓);
+  padding: 12px 16px; margin: 12px 0 20px; line-height: 1.7;
+}
+.延伸組 { margin-bottom: 28px; }
+.延伸組標 {
+  font-size: 26px; color: var(--綠深); margin: 0 0 12px;
+  padding-left: 12px; border-left: 8px solid var(--綠淺);
+}
+.延伸牆 { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.延伸卡 {
+  display: flex; flex-direction: column; text-decoration: none; color: inherit;
+  background: var(--白); border: 2px solid var(--框); border-radius: var(--圓);
+  overflow: hidden; transition: transform .12s, box-shadow .12s, border-color .12s;
+}
+.延伸卡:hover, .延伸卡:focus-visible {
+  transform: translateY(-3px); border-color: var(--綠);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .14); outline: none;
+}
+.延伸縮圖 { position: relative; aspect-ratio: 16 / 9; background: var(--綠背); }
+.延伸縮圖 img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 沒有網路時縮圖抓不到，用一個大圖示頂替，版面不會塌掉 */
+.延伸縮圖.無縮圖::before {
+  content: "🎬"; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 54px;
+}
+.延伸時長 {
+  position: absolute; right: 8px; bottom: 8px;
+  background: rgba(0, 0, 0, .78); color: #fff;
+  font-size: 15px; padding: 2px 8px; border-radius: 6px;
+}
+.延伸文字 { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 4px; }
+.延伸標題 { font-size: 20px; font-weight: 700; line-height: 1.45; }
+.延伸來源 { font-size: 16px; color: var(--灰); }
+.延伸說明 { font-size: 16px; color: var(--字); line-height: 1.6; margin-top: 2px; }
+.延伸卡::after {
+  content: "▶ 在 YouTube 開啟"; margin: 0 14px 12px;
+  font-size: 16px; color: var(--藍); font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+  .延伸組標 { font-size: 23px; }
+  .延伸標題 { font-size: 19px; }
+}
+@media (max-width: 600px) {
+  .延伸牆 { grid-template-columns: 1fr; }
+  .延伸組標 { font-size: 21px; }
+  .延伸標題 { font-size: 18px; }
+}

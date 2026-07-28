@@ -778,6 +778,63 @@
   })();
 
   /* ================================================================
+     分區七：延伸學習（外部教學影片，點了會開新分頁到 YouTube）
+     ----------------------------------------------------------------
+     資料來自 data.js 的 UNIT.延伸影片；沒有這個欄位或空陣列時，
+     整個分區與導覽鈕都會自動隱藏（舊單元不用改也不會壞）。
+     ⚠️ 這一區需要網路。網站其他部分仍然可以離線使用。
+     ================================================================ */
+  const 延伸 = (function () {
+    const 有資料 = () => Array.isArray(window.UNIT.延伸影片) && UNIT.延伸影片.length > 0;
+
+    function 畫() {
+      if (!有資料()) {
+        $("#區延伸")?.remove();
+        $$(".導覽鈕").find((b) => b.dataset.區 === "區延伸")?.remove();
+        return;
+      }
+      /* 依重點分組；重點 0 或沒寫的歸到「綜合」 */
+      const 組 = new Map();
+      UNIT.延伸影片.forEach((v) => {
+        const k = v.重點 || 0;
+        if (!組.has(k)) 組.set(k, []);
+        組.get(k).push(v);
+      });
+      const 標題 = (k) => {
+        if (!k) return "🌟 綜合複習";
+        const r = UNIT.重點.find((x) => x.編號 === k);
+        return r ? `${r.圖示} 重點 ${r.編號}　${r.標題}` : `重點 ${k}`;
+      };
+      /* 依重點編號排序；「綜合複習」（重點 0）放到最後面 */
+      const 排序 = [...組.keys()].sort((a, b) => (a || 99) - (b || 99));
+      $("#延伸內容").innerHTML = 排序.map((k) => `
+        <div class="延伸組">
+          <h3 class="延伸組標">${標題(k)}</h3>
+          <div class="延伸牆">
+            ${組.get(k).map((v) => `
+              <a class="延伸卡" href="https://www.youtube.com/watch?v=${v.id}"
+                 target="_blank" rel="noopener noreferrer">
+                <div class="延伸縮圖">
+                  <!-- 不要用 loading="lazy"：卡片在視窗外時圖片不會載入，
+                       離線時連 onerror 都不會觸發，佔位圖示也就不會出現 -->
+                  <img src="https://i.ytimg.com/vi/${v.id}/mqdefault.jpg" alt="" referrerpolicy="no-referrer"
+                       onerror="this.style.display='none';this.parentElement.classList.add('無縮圖')">
+                  <span class="延伸時長">${v.長度 || ""}</span>
+                </div>
+                <div class="延伸文字">
+                  <div class="延伸標題">${v.標題}</div>
+                  <div class="延伸來源">${v.頻道}</div>
+                  ${v.說明 ? `<div class="延伸說明">${v.說明}</div>` : ""}
+                </div>
+              </a>`).join("")}
+          </div>
+        </div>`).join("");
+    }
+
+    return { 畫 };
+  })();
+
+  /* ================================================================
      分頁切換
      ================================================================ */
   function 初始化分頁() {
@@ -815,6 +872,7 @@
     $("#影片播放器").src = UNIT.資源.影片;
 
     工具.初始化();
+    延伸.畫();        /* ★ 要在 初始化分頁() 之前，沒有延伸影片時才來得及移除導覽鈕 */
     初始化分頁();
     點名.初始化();
     輪播.初始化();
